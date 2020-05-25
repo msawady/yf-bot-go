@@ -66,7 +66,7 @@ func main() {
 					send(rtm, "Following blocks are discarded due to invalid format.\n"+strings.Join(invalids, ","), channel, messageTs, threadTs)
 				}
 
-				urlBase := `https://stocks.finance.yahoo.co.jp/stocks/detail/?code=`
+				urlBase := `https://finance.yahoo.com/quote/`
 				for _, sym := range syms {
 					send(rtm, urlBase+sym, channel, messageTs, threadTs)
 				}
