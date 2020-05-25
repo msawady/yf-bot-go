@@ -21,6 +21,7 @@ func main() {
 	Usage: please input stock code split with space after my name.
 	example: @Yahoo Finance 7201.T 7203.T (max: 5)
 	`
+	tickerPattern := regexp.MustCompile(`[A-Z]{1,5}`)
 	ricPattern := regexp.MustCompile(`\d{4}\.T`)
 	mentionToMe := "MY_ID"
 	rtm := api.NewRTM()
@@ -47,27 +48,27 @@ func main() {
 					send(rtm, usage, channel, messageTs, threadTs)
 				}
 
-				cands := blocks[1:len(blocks)]
-				var rics []string
+				cands := blocks[1:]
+				var syms []string
 				var invalids []string
 
 				for _, b := range cands {
-					if ricPattern.MatchString(b) {
-						rics = append(rics, b)
+					if ricPattern.MatchString(b) || tickerPattern.MatchString(b) {
+						syms = append(syms, b)
 					} else {
 						invalids = append(invalids, b)
 					}
 				}
 
-				if len(rics) < 1 || len(rics) > 5 {
+				if len(syms) < 1 || len(syms) > 5 {
 					send(rtm, usage, channel, messageTs, threadTs)
 				} else if len(invalids) > 0 {
 					send(rtm, "Following blocks are discarded due to invalid format.\n"+strings.Join(invalids, ","), channel, messageTs, threadTs)
 				}
 
 				urlBase := `https://stocks.finance.yahoo.co.jp/stocks/detail/?code=`
-				for _, ric := range rics {
-					send(rtm, urlBase+ric, channel, messageTs, threadTs)
+				for _, sym := range syms {
+					send(rtm, urlBase+sym, channel, messageTs, threadTs)
 				}
 			}
 
