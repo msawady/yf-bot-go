@@ -23,10 +23,10 @@ func main() {
 	`
 	tickerPattern := regexp.MustCompile(`[A-Z]{1,5}`)
 	ricPattern := regexp.MustCompile(`\d{4}\.T`)
-	mentionToMe := "MY_ID"
 	rtm := api.NewRTM()
 	go rtm.ManageConnection()
 
+	var myID string
 	for msg := range rtm.IncomingEvents {
 		switch ev := msg.Data.(type) {
 		case *slack.HelloEvent:
@@ -35,11 +35,12 @@ func main() {
 		case *slack.ConnectedEvent:
 			fmt.Println("Infos:", ev.Info)
 			fmt.Println("Connection counter:", ev.ConnectionCount)
+			myID = ev.Info.User.ID
 
 		case *slack.MessageEvent:
 			fmt.Printf("Message: %v\n", ev)
 			msg := ev.Text
-			if strings.HasPrefix(msg, mentionToMe) {
+			if strings.HasPrefix(msg, fmt.Sprintf("<@%s>", myID)) {
 				blocks := strings.Split(msg, " ")
 				channel := ev.Channel
 				messageTs := ev.EventTimestamp
