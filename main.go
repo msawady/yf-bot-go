@@ -7,12 +7,22 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/BurntSushi/toml"
 	"github.com/slack-go/slack"
 )
 
+type Config struct {
+	SlackToken string `toml:"slack_token"`
+}
+
 func main() {
+	var config Config
+	_, err := toml.DecodeFile("config.toml", &config)
+	if err != nil {
+		panic(err)
+	}
 	api := slack.New(
-		"MY_TOKEN",
+		config.SlackToken,
 		slack.OptionDebug(false),
 		slack.OptionLog(log.New(os.Stdout, "slack-bot: ", log.Lshortfile|log.LstdFlags)),
 	)
@@ -38,13 +48,14 @@ func main() {
 			myID = ev.Info.User.ID
 
 		case *slack.MessageEvent:
-			fmt.Printf("Message: %v\n", ev)
 			msg := ev.Text
 			if strings.HasPrefix(msg, fmt.Sprintf("<@%s>", myID)) {
 				blocks := strings.Split(msg, " ")
 				channel := ev.Channel
 				messageTs := ev.EventTimestamp
 				threadTs := ev.ThreadTimestamp
+				fmt.Println("mention at: " + channel)
+				fmt.Println("msg: " + msg)
 				if len(blocks) < 1 {
 					send(rtm, usage, channel, messageTs, threadTs)
 				}
