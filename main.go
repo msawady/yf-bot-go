@@ -17,7 +17,13 @@ type Config struct {
 
 func main() {
 	var config Config
-	_, err := toml.DecodeFile("config.toml", &config)
+	var confFileName string
+	if value, ok := os.LookupEnv("YF_BOT_CONFIG"); ok {
+		confFileName = value
+	} else {
+		confFileName = "config.toml"
+	}
+	_, err := toml.DecodeFile(confFileName, &config)
 	if err != nil {
 		panic(err)
 	}
