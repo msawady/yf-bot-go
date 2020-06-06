@@ -35,7 +35,7 @@ func main() {
 
 	usage := `
 	Usage: please input stock code split with space after my name.
-	example: @Yahoo Finance 7201.T 7203.T (max: 5)
+	example: @yahoo 7201.T 7203.T (max: 5)
 	`
 	tickerPattern := regexp.MustCompile(`[A-Z]{1,5}`)
 	ricPattern := regexp.MustCompile(`\d{4}\.T`)
