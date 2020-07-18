@@ -71,8 +71,9 @@ func main() {
 				var invalids []string
 
 				for _, b := range cands {
-					if ricPattern.MatchString(b) || tickerPattern.MatchString(b) {
-						syms = append(syms, b)
+					upper := strings.ToUpper(b)
+					if ricPattern.MatchString(upper) || tickerPattern.MatchString(upper) {
+						syms = append(syms, upper)
 					} else {
 						invalids = append(invalids, b)
 					}
