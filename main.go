@@ -70,12 +70,12 @@ func main() {
 				var syms []string
 				var invalids []string
 
-				for _, b := range cands {
-					upper := strings.ToUpper(b)
+				for _, cand := range cands {
+					upper := strings.ToUpper(cand)
 					if ricPattern.MatchString(upper) || tickerPattern.MatchString(upper) {
 						syms = append(syms, upper)
 					} else {
-						invalids = append(invalids, b)
+						invalids = append(invalids, cand)
 					}
 				}
 
